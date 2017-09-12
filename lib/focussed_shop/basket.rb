@@ -19,8 +19,9 @@ module FocussedShop
         product_quantity = product[1]
         product_price =FocussedShop::Products::CATALOGUE.find{|p| p[:code]==product_code}[:price]
         total + (product_price * product_quantity)
-      end
-      sprintf("%.2f", result)
+     end
+     result = result + DeliveryCalculator.calculate(result)
+      sprintf("%.2f", result).to_f
 
     end
 
