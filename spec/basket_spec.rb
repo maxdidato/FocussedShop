@@ -1,11 +1,17 @@
 require 'spec_helper'
 describe FocussedShop::Basket do
 
-  let(:subject) {FocussedShop::Basket.new(FocussedShop::Products::CATALOGUE)}
+  let(:subject) {FocussedShop::Basket.new(FocussedShop::Products::CATALOGUE,
+                                          FocussedShop::DeliveryCalculator,
+                                          FocussedShop::Offers)}
   context '#initialize' do
-    it 'is initialised with a catalogue' do
-      basket = FocussedShop::Basket.new(FocussedShop::Products::CATALOGUE)
+    it 'is initialised with a catalogue,delivery charges rules and offers' do
+      basket = FocussedShop::Basket.new(FocussedShop::Products::CATALOGUE,
+                                        FocussedShop::DeliveryCalculator,
+                                        FocussedShop::Offers)
       expect(basket.catalogue).to eq(FocussedShop::Products::CATALOGUE)
+      expect(basket.offers).to eq(FocussedShop::Offers)
+      expect(basket.delivery_calculator).to eq(FocussedShop::DeliveryCalculator)
     end
   end
 
@@ -37,12 +43,24 @@ describe FocussedShop::Basket do
 
   context "#total" do
 
+    it "returns 0 if no products" do
+      expect(subject.total).to eq(0)
+    end
     it "returns total amount of the basket with delivery cost" do
       subject.add(:S01)
       subject.add(:S01)
       subject.add(:B01)
       subject.add(:J01)
       expect(subject.total).to eq((73.8 + 2.95))
+    end
+
+    it "returns total amount of the basket plus delivery cost minus discounts" do
+      subject.add(:S01)
+      subject.add(:S01)
+      subject.add(:B01)
+      subject.add(:J01)
+      subject.add(:J01)
+      expect(subject.total).to eq((90.27))
     end
   end
 end
