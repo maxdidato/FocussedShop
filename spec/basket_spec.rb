@@ -8,6 +8,7 @@ describe FocussedShop::Basket do
       expect(basket.catalogue).to eq(FocussedShop::Products::CATALOGUE)
     end
   end
+
   context '#add' do
 
     it 'adds an element to the basket' do
@@ -31,6 +32,17 @@ describe FocussedShop::Basket do
 
     it "raises an exception if the product code is not valid" do
       expect{subject.add("Non Existing ")}.to raise_error("invalid product code")
+    end
+  end
+
+  context "#total" do
+
+    it "returns total amount of the basket" do
+      subject.add(:S01)
+      subject.add(:S01)
+      subject.add(:B01)
+      subject.add(:J01)
+      expect(subject.total).to eq(("73.8"))
     end
   end
 end
